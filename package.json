@@ -6,7 +6,7 @@
   "originalAuthor": "trinh.nck",
   "name": "@znemz/json-parse",
   "description": "A json parser / validator that has an option to check for duplicated keys",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nmccready/json-duplicate-key-handle.git"
