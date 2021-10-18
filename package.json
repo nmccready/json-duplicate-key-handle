@@ -1,11 +1,15 @@
 {
-  "author": "trinh.nck",
-  "name": "json-duplicate-key-handle",
-  "description": "A json handler that has an option to check for duplicated keys",
+  "author": {
+    "name": "Nick McCready",
+    "email": "nemtcan@gmail.com"
+  },
+  "originalAuthor": "trinh.nck",
+  "name": "@znemz/json-parse",
+  "description": "A json parser / validator that has an option to check for duplicated keys",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KhanhTrinh2094/json-duplicate-key-handle.git"
+    "url": "git+https://github.com/nmccready/json-duplicate-key-handle.git"
   },
   "dependencies": {
     "backslash": "^0.2.0"
@@ -15,7 +19,7 @@
     "better-npm-audit": "~3.4.0",
     "mocha": "^9.1.2"
   },
-  "homepage": "https://github.com/KhanhTrinh2094/json-duplicate-key-handl",
+  "homepage": "https://github.com/nmccready/json-duplicate-key-handl",
   "keywords": [
     "jsonhandler",
     "json",
