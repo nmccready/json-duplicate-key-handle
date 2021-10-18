@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "better-npm-audit": "~3.4.0",
     "mocha": "^9.1.2"
   },
   "homepage": "https://github.com/KhanhTrinh2094/json-duplicate-key-handl",
@@ -30,6 +31,7 @@
     }
   ],
   "scripts": {
+    "better-audit": "better-npm-audit audit",
     "test": "mocha ./test/*.spec.js"
   }
 }
