@@ -1,7 +1,7 @@
-var backslash = require('backslash');
+var backslash = require("backslash");
 module.exports = {
   validate: validate,
-  parse: parse
+  parse: parse,
 };
 
 /**
@@ -14,13 +14,13 @@ module.exports = {
 function validate(jsonString, allowDuplicatedKeys) {
   var error;
   allowDuplicatedKeys = allowDuplicatedKeys || false;
-  if (typeof jsonString !== 'string') {
-    error = 'Input must be a string';
+  if (typeof jsonString !== "string") {
+    error = "Input must be a string";
   } else {
     try {
       // Try to find a value starting from index 0
       _findValue(jsonString, 0, allowDuplicatedKeys, false);
-    } catch(e) {
+    } catch (e) {
       error = e.message;
     }
   }
@@ -34,8 +34,8 @@ function validate(jsonString, allowDuplicatedKeys) {
  * @returns {Object}
  */
 function parse(jsonString, allowDuplicatedKeys) {
-  if (typeof jsonString !== 'string') {
-    throw new Error('Input must be a string');
+  if (typeof jsonString !== "string") {
+    throw new Error("Input must be a string");
   }
 
   allowDuplicatedKeys = allowDuplicatedKeys || false;
@@ -58,14 +58,14 @@ function _findSeparator(str, startInd) {
   var sepEndInd;
   for (var i = startInd; i < len; i++) {
     var ch = str[i];
-    if (ch === ',') {
+    if (ch === ",") {
       sepEndInd = i;
       break;
-    } else if ( ch === ']' || ch === '}') {
+    } else if (ch === "]" || ch === "}") {
       sepEndInd = i - 1;
       break;
     } else if (!_isWhiteSpace(ch)) {
-      throw _syntaxError(str, i, 'expecting end of expression or separator');
+      throw _syntaxError(str, i, "expecting end of expression or separator");
     }
   }
 
@@ -80,7 +80,7 @@ function _findSeparator(str, startInd) {
   return {
     start: sepStartInd,
     end: sepEndInd,
-    value: value
+    value: value,
   };
 }
 
@@ -97,20 +97,20 @@ function _findSemiColonSeparator(str, startInd) {
   var semiColEndInd;
   for (var i = startInd; i < len; i++) {
     var ch = str[i];
-    if (ch === ':') {
+    if (ch === ":") {
       semiColEndInd = i;
       break;
     } else if (!_isWhiteSpace(ch)) {
-      throw _syntaxError(str, i, 'expecting \':\'');
+      throw _syntaxError(str, i, "expecting ':'");
     }
   }
   if (semiColEndInd === undefined) {
-    throw _syntaxError(str, i, 'expecting \':\'');
+    throw _syntaxError(str, i, "expecting ':'");
   }
   semiColEndInd++;
   return {
     start: semiColStartInd,
-    end: semiColEndInd
+    end: semiColEndInd,
   };
 }
 
@@ -135,13 +135,12 @@ function _findValue(str, startInd, allowDuplicatedKeys, parse) {
   var value;
 
   for (var i = startInd; i < len; i++) {
-
     var ch = str[i];
     if (valueStartInd === undefined) {
       if (!_isWhiteSpace(ch)) {
-        if (ch === '[') {
+        if (ch === "[") {
           isArray = true;
-        } else if (ch === '{') {
+        } else if (ch === "{") {
           isObject = true;
         } else if (ch === '"') {
           isString = true;
@@ -165,10 +164,10 @@ function _findValue(str, startInd, allowDuplicatedKeys, parse) {
           break;
         } else if (_isNumber(ch)) {
           isNumber = true;
-        } else if (ch === '-') {
+        } else if (ch === "-") {
           isNumber = true;
         } else {
-          throw _syntaxError(str, i, '');
+          throw _syntaxError(str, i, "");
         }
         valueStartInd = i;
       }
@@ -183,23 +182,27 @@ function _findValue(str, startInd, allowDuplicatedKeys, parse) {
         valueEndInd = obj.end;
         value = obj.value;
         break;
-      } else if (isString && ch === '"' && _hasEvenNumberOfBackSlash(str, i - 1)) {
+      } else if (
+        isString &&
+        ch === '"' &&
+        _hasEvenNumberOfBackSlash(str, i - 1)
+      ) {
         valueEndInd = i;
         value = backslash(str.substring(valueStartInd + 1, valueEndInd));
         break;
       } else if (isNumber) {
-        if(_isWhiteSpace(ch)) {
+        if (_isWhiteSpace(ch)) {
           whiteSpaceInNumber = true;
-        } else if (ch === ',' || ch === ']' || ch === '}') {
+        } else if (ch === "," || ch === "]" || ch === "}") {
           value = parseFloat(str.substring(valueStartInd, valueEndInd), 10);
           valueEndInd = i - 1;
           break;
         } else if (_isNumber(ch) && !whiteSpaceInNumber) {
           continue;
-        } else if (ch === '.' && !dotFound && !whiteSpaceInNumber) {
+        } else if (ch === "." && !dotFound && !whiteSpaceInNumber) {
           dotFound = true;
         } else {
-          throw _syntaxError(str, i, 'expecting number');
+          throw _syntaxError(str, i, "expecting number");
         }
       }
     }
@@ -210,14 +213,14 @@ function _findValue(str, startInd, allowDuplicatedKeys, parse) {
       value = parseFloat(str.substring(valueStartInd, i), 10);
       valueEndInd = i - 1;
     } else {
-      throw _syntaxError(str, i, 'unclosed statement');
+      throw _syntaxError(str, i, "unclosed statement");
     }
   }
   valueEndInd++;
   return {
     value: value,
     start: valueStartInd,
-    end: valueEndInd
+    end: valueEndInd,
   };
 }
 
@@ -237,7 +240,7 @@ function _findKey(str, startInd) {
     if (keyStartInd === undefined) {
       if (!_isWhiteSpace(ch)) {
         if (ch !== '"') {
-          throw _syntaxError(str, i, 'expecting String');
+          throw _syntaxError(str, i, "expecting String");
         }
         keyStartInd = i;
       }
@@ -250,18 +253,18 @@ function _findKey(str, startInd) {
   }
 
   if (keyEndInd === undefined) {
-    throw _syntaxError(str, len, 'expecting String');
+    throw _syntaxError(str, len, "expecting String");
   }
 
   var value = backslash(str.substring(keyStartInd + 1, keyEndInd));
-  if (value === '') {
-    throw _syntaxError(str, keyStartInd, 'empty string');
+  if (value === "") {
+    throw _syntaxError(str, keyStartInd, "empty string");
   }
   keyEndInd++;
   return {
     start: keyStartInd,
     end: keyEndInd,
-    value: value
+    value: value,
   };
 }
 
@@ -275,7 +278,7 @@ function _findKey(str, startInd) {
  */
 function _findObject(str, startInd, allowDuplicatedKeys, parse) {
   var i = startInd;
-  var sepValue = ',';
+  var sepValue = ",";
   var obj = {};
   var keys = [];
   var values = [];
@@ -285,24 +288,28 @@ function _findObject(str, startInd, allowDuplicatedKeys, parse) {
     j++;
   }
 
-  if (str[j] === '}') {
+  if (str[j] === "}") {
     return {
       start: startInd,
       end: j,
-      value: obj
+      value: obj,
     };
   }
 
-  while (sepValue === ',') {
+  while (sepValue === ",") {
     var key = _findKey(str, i);
     var semi = _findSemiColonSeparator(str, key.end);
     var value = _findValue(str, semi.end, allowDuplicatedKeys, parse);
     var sepIndex = _findSeparator(str, value.end);
 
     if (!allowDuplicatedKeys) {
-      if(keys.indexOf(key.value) !== -1) {
-        //key.value = key.value + '1';
+      if (keys.indexOf(key.value) !== -1) {
         throw _syntaxError(str, key.end, 'duplicated keys "' + key.value + '"');
+      }
+    }
+    if (allowDuplicatedKeys === "increment") {
+      if (keys.indexOf(key.value) !== -1) {
+        key.value = key.value + "1";
       }
     }
     keys.push(key.value);
@@ -313,7 +320,7 @@ function _findObject(str, startInd, allowDuplicatedKeys, parse) {
 
   if (parse) {
     var indx = 0;
-    for(indx = 0; indx < keys.length; indx++) {
+    for (indx = 0; indx < keys.length; indx++) {
       obj[keys[indx]] = values[indx];
     }
   }
@@ -321,7 +328,7 @@ function _findObject(str, startInd, allowDuplicatedKeys, parse) {
   return {
     start: startInd,
     end: i,
-    value: obj
+    value: obj,
   };
 }
 
@@ -336,11 +343,11 @@ function _findObject(str, startInd, allowDuplicatedKeys, parse) {
 function _hasEvenNumberOfBackSlash(str, endInd) {
   var i = endInd;
   var count = 0;
-  while(i > -1 && str[i] === '\\') {
+  while (i > -1 && str[i] === "\\") {
     count++;
     i--;
   }
-  return (count % 2) === 0;
+  return count % 2 === 0;
 }
 
 /**
@@ -352,7 +359,7 @@ function _hasEvenNumberOfBackSlash(str, endInd) {
  */
 function _findArray(str, startInd, allowDuplicatedKeys, parse) {
   var i = startInd;
-  var sepValue = ',';
+  var sepValue = ",";
   var arr = [];
 
   var j = startInd;
@@ -360,15 +367,15 @@ function _findArray(str, startInd, allowDuplicatedKeys, parse) {
     j++;
   }
 
-  if (str[j] === ']') {
+  if (str[j] === "]") {
     return {
       start: startInd,
       end: j,
-      value: arr
+      value: arr,
     };
   }
 
-  while (sepValue === ',') {
+  while (sepValue === ",") {
     var value = _findValue(str, i, allowDuplicatedKeys, parse);
     var sepIndex = _findSeparator(str, value.end);
 
@@ -381,7 +388,7 @@ function _findArray(str, startInd, allowDuplicatedKeys, parse) {
   return {
     start: startInd,
     end: i,
-    value: arr
+    value: arr,
   };
 }
 
@@ -393,7 +400,7 @@ function _findArray(str, startInd, allowDuplicatedKeys, parse) {
  * @private
  */
 function _isTrueFromIndex(str, ind) {
-  return (str.substr(ind, 4) === 'true');
+  return str.substr(ind, 4) === "true";
 }
 
 /**
@@ -404,7 +411,7 @@ function _isTrueFromIndex(str, ind) {
  * @private
  */
 function _isFalseFromIndex(str, ind) {
-  return (str.substr(ind, 5) === 'false');
+  return str.substr(ind, 5) === "false";
 }
 
 /**
@@ -415,7 +422,7 @@ function _isFalseFromIndex(str, ind) {
  * @private
  */
 function _isNullFromIndex(str, ind) {
-  return (str.substr(ind, 4) === 'null');
+  return str.substr(ind, 4) === "null";
 }
 
 var white = new RegExp(/^\s$/);
@@ -425,7 +432,7 @@ var white = new RegExp(/^\s$/);
  * @returns {Boolean}
  * @private
  */
-function _isWhiteSpace(ch){
+function _isWhiteSpace(ch) {
   return white.test(ch);
 }
 
@@ -453,18 +460,24 @@ function _syntaxError(str, index, reason) {
 
   var regionStr;
   if (str.length < index + regionLen) {
-    regionStr = str.substr(_normalizeNegativeNumber(str.length - regionLen), str.length);
-  } else if (index - (regionLen/2) < 0) {
+    regionStr = str.substr(
+      _normalizeNegativeNumber(str.length - regionLen),
+      str.length
+    );
+  } else if (index - regionLen / 2 < 0) {
     regionStr = str.substr(0, regionLen);
   } else {
-    regionStr = str.substr(_normalizeNegativeNumber(index - (regionLen/2)), regionLen);
+    regionStr = str.substr(
+      _normalizeNegativeNumber(index - regionLen / 2),
+      regionLen
+    );
   }
 
   var message;
   if (reason) {
-    message = 'Syntax error: ' + reason + ' near ' + regionStr;
+    message = "Syntax error: " + reason + " near " + regionStr;
   } else {
-    message = 'Syntax error near ' + regionStr;
+    message = "Syntax error near " + regionStr;
   }
   return new Error(message);
 }
@@ -476,5 +489,5 @@ function _syntaxError(str, index, reason) {
  * @private
  */
 function _normalizeNegativeNumber(num) {
-  return (num < 0) ? 0 : num;
+  return num < 0 ? 0 : num;
 }

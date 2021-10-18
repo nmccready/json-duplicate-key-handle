@@ -22,11 +22,13 @@ Type: `String`
 
 JSON string to parse
 #### allowDuplicatedKeys
-Type: `Boolean`
+Type: `Boolean|String`
 
 Default: `false`
 
 Whether duplicated keys are allowed in an object or not
+
+- true || 'increment' true will behave identical to JSON.parse, increment will append duplicate keys by incrementing the field/key name
 
 ## .parse(jsonString, allowDuplicatedKeys)
 Parses a json string and returns the parsed result
